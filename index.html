@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Portal - Student Examination System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="welcome-screen">
+        <div class="welcome-content">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" class="logo-svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#0066FF" stroke-width="2"/>
+                        <path d="M30 35 L50 25 L70 35 L70 65 L50 75 L30 65 Z" fill="none" stroke="#0066FF" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="8" fill="#0066FF"/>
+                    </svg>
+                </div>
+                <h1 class="welcome-title">WELCOME TO</h1>
+                <h2 class="welcome-subtitle">SCHOOL PORTAL</h2>
+                <p class="welcome-description">Student Examination System</p>
+            </div>
+            <button id="enter-btn" class="enter-button">
+                <span class="button-text">Enter Portal</span>
+                <div class="button-glow"></div>
+            </button>
+        </div>
+        <div class="particles-container" id="welcome-particles"></div>
+    </div>
+
+    <!-- Scanner Animation -->
+    <div id="scanner-screen" class="scanner-screen hidden">
+        <div class="scanner-container">
+            <div class="scanner-ring ring-1"></div>
+            <div class="scanner-ring ring-2"></div>
+            <div class="scanner-ring ring-3"></div>
+            <div class="scanner-center">
+                <div class="scanner-core"></div>
+            </div>
+            <div class="scanner-particles" id="scanner-particles"></div>
+        </div>
+        <div class="scanner-text">
+            <div class="scanner-label">SYSTEM ACCESS</div>
+            <div class="scanner-percentage" id="scanner-percentage">0%</div>
+        </div>
+        <div class="scanner-light-rays"></div>
+    </div>
+
+    <script src="js/welcome.js"></script>
+</body>
+</html>

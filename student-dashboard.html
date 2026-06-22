@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - School Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div class="student-dashboard">
+        <div class="student-header">
+            <div class="student-logo">
+                <svg viewBox="0 0 100 100" class="student-logo-svg">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#0066FF" stroke-width="2"/>
+                    <path d="M30 35 L50 25 L70 35 L70 65 L50 75 L30 65 Z" fill="none" stroke="#0066FF" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="8" fill="#0066FF"/>
+                </svg>
+            </div>
+            <h1 class="student-title">Student Portal</h1>
+            <div class="student-user">
+                <span class="student-avatar">👨‍🎓</span>
+                <span class="student-name" id="student-name">Student</span>
+                <button class="logout-button-small" id="student-logout">Logout</button>
+            </div>
+        </div>
+        <div class="student-content">
+            <div class="student-welcome">
+                <h2>Welcome back!</h2>
+                <p>Ready to take your examinations?</p>
+            </div>
+            <div class="student-sections">
+                <div class="student-section">
+                    <h3>Available Exams</h3>
+                    <div class="exams-list" id="student-exams-list">
+                        <div class="no-exams">
+                            <p>No available exams at the moment</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="student-section">
+                    <h3>Recent Results</h3>
+                    <div class="results-list" id="student-results-list">
+                        <div class="no-results">
+                            <p>No results yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal-container hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/student-dashboard.js"></script>
+</body>
+</html>
