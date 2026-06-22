@@ -244,21 +244,32 @@ class Database {
         return this.update('settings', { key, value });
     }
 
-    // Initialize with demo data
-    async initializeDemoData() {
+    // Initialize with data from JSON file
+    async initializeFromJSON() {
         try {
             // Check if users already exist
             const users = await this.getAll('users');
             if (users.length === 0) {
-                // Create demo users
-                await this.createUser('teacher', 'teacher123', 'teacher', 'teacher@school.edu');
-                await this.createUser('student', 'student123', 'student', 'student@school.edu');
-                await this.createUser('admin', 'admin123', 'admin', 'admin@school.edu');
+                // Fetch users from JSON file
+                const response = await fetch('db/users.json');
+                const data = await response.json();
 
-                // Create demo students
-                await this.createStudent('STU001', 'John Doe', 'john@school.edu', 'Class 10A');
-                await this.createStudent('STU002', 'Jane Smith', 'jane@school.edu', 'Class 10A');
-                await this.createStudent('STU003', 'Bob Johnson', 'bob@school.edu', 'Class 10B');
+                // Create teachers
+                for (const teacher of data.teachers) {
+                    await this.createUser(teacher.id, teacher.password, 'teacher', null);
+                }
+
+                // Create students
+                for (const student of data.students) {
+                    await this.createStudent(student.id, student.name, `${student.id}@school.edu`, student.class);
+                    // Also create user account for student login
+                    await this.createUser(student.id, student.password, 'student', `${student.id}@school.edu`);
+                }
+
+                // Create admins
+                for (const admin of data.admins) {
+                    await this.createUser(admin.id, admin.password, 'admin', null);
+                }
 
                 // Create demo exam
                 await this.createExam({
@@ -296,10 +307,10 @@ class Database {
                     status: 'active'
                 });
 
-                console.log('Demo data initialized successfully');
+                console.log('Data initialized from JSON successfully');
             }
         } catch (error) {
-            console.error('Error initializing demo data:', error);
+            console.error('Error initializing data from JSON:', error);
         }
     }
 }
@@ -310,7 +321,7 @@ const db = new Database();
 // Initialize database when script loads
 db.init().then(() => {
     console.log('Database initialized');
-    db.initializeDemoData();
+    db.initializeFromJSON();
 }).catch(error => {
     console.error('Database initialization failed:', error);
 });

@@ -355,6 +355,24 @@ body {
     margin-bottom: 24px;
 }
 
+.show-password-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    opacity: 0.5;
+    transition: opacity var(--transition-normal);
+}
+
+.show-password-btn:hover {
+    opacity: 1;
+}
+
 .input-field {
     width: 100%;
     padding: 16px 0;

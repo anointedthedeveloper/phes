@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Draw point
                 ctx.beginPath();
                 ctx.arc(point.x, point.y, point.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 102, 255, 0.5)';
+                ctx.fillStyle = 'rgba(100, 180, 255, 0.6)';
                 ctx.fill();
             });
 
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.beginPath();
                         ctx.moveTo(constellationPoints[i].x, constellationPoints[i].y);
                         ctx.lineTo(constellationPoints[j].x, constellationPoints[j].y);
-                        ctx.strokeStyle = `rgba(0, 102, 255, ${0.2 * (1 - distance / 150)})`;
+                        ctx.strokeStyle = `rgba(100, 180, 255, ${0.3 * (1 - distance / 150)})`;
                         ctx.lineWidth = 1;
                         ctx.stroke();
                     }
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.beginPath();
                     ctx.moveTo(point.x, point.y);
                     ctx.lineTo(mouseX, mouseY);
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.3 * (1 - distance / 200)})`;
+                    ctx.strokeStyle = `rgba(150, 200, 255, ${0.4 * (1 - distance / 200)})`;
                     ctx.lineWidth = 1;
                     ctx.stroke();
                 }
@@ -344,13 +344,19 @@ document.addEventListener('DOMContentLoaded', () => {
         enterButton.style.opacity = '0';
     }, 1400);
 
-    // Add dynamic background gradient animation
-    let hue = 220;
+    // Add dynamic background gradient animation (blue themed - smoother)
+    let hue = 0;
     function animateBackground() {
-        hue = (hue + 0.5) % 360;
+        hue = (hue + 0.15) % 360; // Full color cycle for smooth transitions
+        // Use blue range (180-260) with smooth transitions
+        const blueHue = 180 + Math.sin(hue * Math.PI / 180) * 40; // Oscillate between 140 and 220
+        const blueHue2 = 200 + Math.cos(hue * Math.PI / 180) * 30; // Oscillate between 170 and 230
+        const lightness = 40 + Math.sin(hue * Math.PI / 180) * 10; // Oscillate lightness
+        
         welcomeScreen.style.background = `linear-gradient(135deg, 
-            hsl(${hue}, 80%, 50%) 0%, 
-            hsl(${hue + 30}, 80%, 40%) 100%)`;
+            hsl(${blueHue}, 80%, ${lightness}%) 0%, 
+            hsl(${blueHue2}, 85%, ${lightness - 5}%) 50%,
+            hsl(${blueHue + 20}, 90%, ${lightness - 10}%) 100%)`;
         requestAnimationFrame(animateBackground);
     }
     animateBackground();

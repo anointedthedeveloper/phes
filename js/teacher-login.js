@@ -16,12 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Toggle password visibility
+    window.togglePassword = function(fieldId) {
+        const field = document.getElementById(fieldId);
+        const btn = event.target;
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            field.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
+
     // Handle login form submission
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+
+        // Log login attempt
+        console.log(`[LOGIN ATTEMPT] Teacher login attempt - Username: ${username}, Time: ${new Date().toISOString()}`);
 
         // Show loading state
         loginButton.classList.add('loading');
@@ -32,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = await db.authenticateUser(username, password, 'teacher');
             
             if (user) {
+                // Log successful login
+                console.log(`[LOGIN SUCCESS] Teacher logged in successfully - Username: ${username}, Time: ${new Date().toISOString()}`);
+                
                 // Store user session
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 
@@ -45,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = 'teacher-dashboard.html';
                 }, 1000);
             } else {
+                // Log failed login
+                console.error(`[LOGIN FAILED] Invalid credentials - Username: ${username}, Time: ${new Date().toISOString()}`);
+                
                 // Show error
                 loginButton.classList.remove('loading');
                 loginButton.disabled = false;
@@ -57,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 2000);
             }
         } catch (error) {
-            console.error('Login error:', error);
+            // Log error
+            console.error(`[LOGIN ERROR] Teacher login error - Username: ${username}, Error: ${error.message}, Time: ${new Date().toISOString()}`);
+            
             loginButton.classList.remove('loading');
             loginButton.disabled = false;
             loginButton.querySelector('.button-text').textContent = 'Error';
