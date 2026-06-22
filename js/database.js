@@ -2,7 +2,7 @@
 class Database {
     constructor() {
         this.dbName = 'SchoolPortalDB';
-        this.dbVersion = 1;
+        this.dbVersion = 2;
         this.db = null;
     }
 
@@ -50,6 +50,12 @@ class Database {
                 // Create settings store
                 if (!db.objectStoreNames.contains('settings')) {
                     db.createObjectStore('settings', { keyPath: 'key' });
+                }
+
+                // Create sessions store
+                if (!db.objectStoreNames.contains('sessions')) {
+                    const sessionsStore = db.createObjectStore('sessions', { keyPath: 'id' });
+                    sessionsStore.createIndex('userId', 'userId', { unique: false });
                 }
             };
         });
@@ -277,6 +283,9 @@ class Database {
                     subject: 'Mathematics',
                     duration: 60,
                     instructions: 'Answer all questions carefully. No calculators allowed.',
+                    targetClass: 'SS 2',
+                    sessionCode: 'MATH-2024-001',
+                    status: 'draft',
                     questions: [
                         {
                             question: 'What is 2 + 2?',
@@ -303,8 +312,7 @@ class Database {
                             options: ['13', '14', '15', '16'],
                             correctAnswer: 2
                         }
-                    ],
-                    status: 'active'
+                    ]
                 });
 
                 console.log('Data initialized from JSON successfully');
@@ -312,6 +320,50 @@ class Database {
         } catch (error) {
             console.error('Error initializing data from JSON:', error);
         }
+    }
+
+    // Session management
+    async createSession(userId, sessionId) {
+        const session = {
+            id: sessionId,
+            userId: userId,
+            createdAt: new Date().toISOString(),
+            lastActive: new Date().toISOString()
+        };
+        return this.add('sessions', session);
+    }
+
+    async getSession(sessionId) {
+        return this.get('sessions', sessionId);
+    }
+
+    async updateSessionActivity(sessionId) {
+        const session = await this.getSession(sessionId);
+        if (session) {
+            session.lastActive = new Date().toISOString();
+            return this.update('sessions', session);
+        }
+    }
+
+    async deleteSession(sessionId) {
+        return this.delete('sessions', sessionId);
+    }
+
+    async getUserSessions(userId) {
+        const allSessions = await this.getAll('sessions');
+        return allSessions.filter(session => session.userId === userId);
+    }
+
+    async revokeUserSessions(userId) {
+        const sessions = await this.getUserSessions(userId);
+        for (const session of sessions) {
+            await this.deleteSession(session.id);
+        }
+    }
+
+    async isUserLoggedIn(userId) {
+        const sessions = await this.getUserSessions(userId);
+        return sessions.length > 0;
     }
 }
 

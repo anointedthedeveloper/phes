@@ -362,15 +362,23 @@ body {
     transform: translateY(-50%);
     background: none;
     border: none;
-    font-size: 20px;
     cursor: pointer;
     padding: 8px;
     opacity: 0.5;
     transition: opacity var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .show-password-btn:hover {
     opacity: 1;
+}
+
+.show-password-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--gray-600);
 }
 
 .input-field {

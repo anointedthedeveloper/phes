@@ -1,15 +1,38 @@
 // Admin Dashboard Logic
 document.addEventListener('DOMContentLoaded', async () => {
-    // Check authentication
+    // Check authentication and session
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const sessionId = localStorage.getItem('sessionId');
+    
     if (!currentUser || currentUser.role !== 'admin') {
         window.location.href = 'admin-login.html';
         return;
     }
 
-    // Logout handler
-    document.getElementById('admin-logout').addEventListener('click', () => {
+    // Validate session
+    if (sessionId) {
+        const session = await db.getSession(sessionId);
+        if (!session || session.userId !== currentUser.username) {
+            // Invalid session, redirect to login
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('sessionId');
+            window.location.href = 'admin-login.html';
+            return;
+        }
+        // Update session activity
+        await db.updateSessionActivity(sessionId);
+    } else {
+        // No session, redirect to login
         localStorage.removeItem('currentUser');
+        window.location.href = 'admin-login.html';
+        return;
+    }
+
+    // Logout handler
+    document.getElementById('admin-logout').addEventListener('click', async () => {
+        await db.deleteSession(sessionId);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('sessionId');
         window.location.href = 'index.html';
     });
 

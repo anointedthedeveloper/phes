@@ -1,8 +1,20 @@
 // Student Login Logic
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('login-form');
     const loginButton = document.querySelector('.login-button');
     const loginParticles = document.getElementById('login-particles');
+
+    // Wait for database to be initialized
+    if (!db.db) {
+        try {
+            await db.init();
+            console.log('[DATABASE] Database initialized successfully');
+        } catch (error) {
+            console.error('[DATABASE ERROR] Failed to initialize database:', error);
+            loginButton.querySelector('.button-text').textContent = 'Database error - please refresh';
+            return;
+        }
+    }
 
     // Create login particles
     function createLoginParticles() {
@@ -19,14 +31,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle password visibility
     window.togglePassword = function(fieldId) {
         const field = document.getElementById(fieldId);
-        const btn = event.target;
+        const btn = event.target.closest('.show-password-btn');
         
         if (field.type === 'password') {
             field.type = 'text';
-            btn.textContent = '🙈';
+            btn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            `;
         } else {
             field.type = 'password';
-            btn.textContent = '👁️';
+            btn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            `;
         }
     };
 
@@ -45,6 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
         loginButton.disabled = true;
 
         try {
+            // Check if user is already logged in
+            const isLoggedIn = await db.isUserLoggedIn(username);
+            if (isLoggedIn) {
+                // Revoke existing sessions
+                await db.revokeUserSessions(username);
+                console.log(`[SESSION] Revoked existing sessions for user: ${username}`);
+            }
+
             // Authenticate user
             const user = await db.authenticateUser(username, password, 'student');
             
@@ -52,8 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Log successful login
                 console.log(`[LOGIN SUCCESS] Student logged in successfully - Username: ${username}, Time: ${new Date().toISOString()}`);
                 
+                // Create session
+                const sessionId = `session-${username}-${Date.now()}`;
+                await db.createSession(username, sessionId);
+                
                 // Store user session
                 localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('sessionId', sessionId);
                 
                 // Show success animation
                 loginButton.classList.remove('loading');
@@ -72,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginButton.classList.remove('loading');
                 loginButton.disabled = false;
                 loginButton.style.background = 'var(--error)';
-                loginButton.querySelector('.button-text').textContent = 'Invalid Credentials';
+                loginButton.querySelector('.button-text').textContent = 'Invalid username or password';
                 
                 setTimeout(() => {
                     loginButton.style.background = 'var(--primary-blue)';
@@ -85,7 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             loginButton.classList.remove('loading');
             loginButton.disabled = false;
-            loginButton.querySelector('.button-text').textContent = 'Error';
+            loginButton.style.background = 'var(--error)';
+            
+            // Show specific error message
+            if (error.message.includes('object stores')) {
+                loginButton.querySelector('.button-text').textContent = 'Database error - please refresh';
+            } else {
+                loginButton.querySelector('.button-text').textContent = 'Login error - please try again';
+            }
+            
+            setTimeout(() => {
+                loginButton.style.background = 'var(--primary-blue)';
+                loginButton.querySelector('.button-text').textContent = 'Sign In';
+            }, 2000);
         }
     });
 

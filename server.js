@@ -1,8 +1,24 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const PORT = 3000;
+
+// Get network IP address
+function getNetworkIP() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+        for (const iface of interfaces[name]) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+                return iface.address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
+const networkIP = getNetworkIP();
 
 // MIME types
 const mimeTypes = {
@@ -22,6 +38,17 @@ const mimeTypes = {
 };
 
 const server = http.createServer((req, res) => {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+
     let filePath = '.' + req.url;
     
     // Handle routing
@@ -61,9 +88,16 @@ const server = http.createServer((req, res) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`School Portal server running at http://localhost:${PORT}/`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log('='.repeat(50));
+    console.log('School Portal Server Started');
+    console.log('='.repeat(50));
+    console.log(`Local access: http://localhost:${PORT}/`);
+    console.log(`Network access: http://${networkIP}:${PORT}/`);
+    console.log('='.repeat(50));
     console.log(`Student portal: http://localhost:${PORT}/`);
     console.log(`Teacher portal: http://localhost:${PORT}/teacher`);
     console.log(`Admin portal: http://localhost:${PORT}/admin`);
+    console.log('='.repeat(50));
+    console.log(`Network path for teacher dashboard: http://${networkIP}:${PORT}/`);
 });
