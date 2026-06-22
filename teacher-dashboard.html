@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - School Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <svg viewBox="0 0 100 100" class="sidebar-logo-svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#0066FF" stroke-width="2"/>
+                        <path d="M30 35 L50 25 L70 35 L70 65 L50 75 L30 65 Z" fill="none" stroke="#0066FF" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="8" fill="#0066FF"/>
+                    </svg>
+                </div>
+                <h3 class="sidebar-title">School Portal</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="students">
+                    <span class="nav-icon">👨‍🎓</span>
+                    <span class="nav-text">Students</span>
+                </div>
+                <div class="nav-item" data-section="exams">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Examinations</span>
+                </div>
+                <div class="nav-item" data-section="monitoring">
+                    <span class="nav-icon">👁️</span>
+                    <span class="nav-text">Live Monitor</span>
+                </div>
+                <div class="nav-item" data-section="results">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Results</span>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👨‍🏫</div>
+                    <div class="user-details">
+                        <p class="user-name" id="teacher-name">Teacher</p>
+                        <p class="user-role">Teacher</p>
+                    </div>
+                </div>
+                <button class="logout-button" id="teacher-logout">
+                    <span class="logout-icon">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <div class="dashboard-header">
+                <h1 class="page-title" id="teacher-page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="action-button notification-btn">
+                        <span>🔔</span>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+            <div class="dashboard-content" id="teacher-content">
+                <!-- Dashboard Section -->
+                <div class="content-section active" id="teacher-dashboard-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon students-icon">👨‍🎓</div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="total-students">0</h3>
+                                <p class="stat-label">Total Students</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon exams-icon">📝</div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="total-exams">0</h3>
+                                <p class="stat-label">Total Exams</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon active-icon">🟢</div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="active-exams">0</h3>
+                                <p class="stat-label">Active Exams</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon submitted-icon">✅</div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="submitted-exams">0</h3>
+                                <p class="stat-label">Submitted Exams</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Students Section -->
+                <div class="content-section" id="teacher-students-section">
+                    <div class="section-header">
+                        <h2>Student Management</h2>
+                        <button class="primary-button" id="add-student-btn">Add Student</button>
+                    </div>
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="student-search" placeholder="Search students...">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Class</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Exams Section -->
+                <div class="content-section" id="teacher-exams-section">
+                    <div class="section-header">
+                        <h2>Examination Management</h2>
+                        <button class="primary-button" id="create-exam-btn">Create Exam</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Exam Name</th>
+                                    <th>Subject</th>
+                                    <th>Duration</th>
+                                    <th>Questions</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exams-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Monitoring Section -->
+                <div class="content-section" id="teacher-monitoring-section">
+                    <div class="section-header">
+                        <h2>Live Examination Monitoring</h2>
+                    </div>
+                    <div class="monitoring-grid" id="monitoring-grid">
+                        <div class="no-active-exams">
+                            <p>No active examinations at the moment</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Results Section -->
+                <div class="content-section" id="teacher-results-section">
+                    <div class="section-header">
+                        <h2>Exam Results</h2>
+                        <button class="primary-button" id="export-results-btn">Export Results</button>
+                    </div>
+                    <div class="results-summary">
+                        <div class="summary-card">
+                            <h3>Pass Rate</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="pass-rate-bar" style="width: 0%"></div>
+                            </div>
+                            <p class="percentage" id="pass-rate-text">0%</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Average Score</h3>
+                            <p class="average-score" id="average-score">0%</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Exam</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal-container hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/teacher-dashboard.js"></script>
+</body>
+</html>
